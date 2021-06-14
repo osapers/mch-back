@@ -1,0 +1,42 @@
+version: '3.5'
+
+services:
+  postgres:
+    container_name: postgres
+    image: bitnami/postgresql:11.12.0-debian-10-r23
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+      POSTGRESQL_DATABASE: mch
+    ports:
+      - "5433:5432"
+    networks:
+      - mch
+    restart: unless-stopped
+
+  yake:
+    container_name: yake
+    image: liaad/yake-server:latest
+    ports:
+      - "5001:5000"
+    networks:
+      - mch
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    environment:
+      DB_URL: postgres://postgres@postgres:5432/mch
+      DB_SECRET: secretsecretsecretsecretsecretse
+      KWE_URL: http://yake:5000/yake/
+    ports:
+      - "8080:8080"
+    networks:
+      - mch
+    restart: unless-stopped
+
+networks:
+  mch:
+    driver: bridge

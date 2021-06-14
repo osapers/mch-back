@@ -1,0 +1,6 @@
+BEGIN;
+
+DROP TABLE IF EXISTS mch.project;
+DROP TABLE IF EXISTS mch.user_project;
+
+COMMIT;
